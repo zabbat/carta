@@ -1,0 +1,215 @@
+[
+  {
+    "name": "Botswana",
+    "capital": "Gaborone",
+    "altSpellings": [
+      "BW",
+      "Republic of Botswana",
+      "Lefatshe la Botswana"
+    ],
+    "relevance": "0",
+    "region": "Africa",
+    "subregion": "Southern Africa",
+    "translations": {
+      "de": "Botswana",
+      "es": "Botswana",
+      "fr": "Botswana",
+      "ja": "ボツワナ",
+      "it": "Botswana"
+    },
+    "population": 2070984,
+    "latlng": [
+      -22,
+      24
+    ],
+    "demonym": "Motswana",
+    "area": 582000,
+    "gini": 61,
+    "timezones": [
+      "UTC+02:00"
+    ],
+    "borders": [
+      "NAM",
+      "ZAF",
+      "ZMB",
+      "ZWE"
+    ],
+    "nativeName": "Botswana",
+    "callingCodes": [
+      "267"
+    ],
+    "topLevelDomain": [
+      ".bw"
+    ],
+    "alpha2Code": "BW",
+    "alpha3Code": "BWA",
+    "currencies": [
+      "BWP"
+    ],
+    "languages": [
+      "en",
+      "tn"
+    ]
+  },
+  {
+    "name": "Swaziland",
+    "capital": "Lobamba",
+    "altSpellings": [
+      "SZ",
+      "weSwatini",
+      "Swatini",
+      "Ngwane",
+      "Kingdom of Swaziland",
+      "Umbuso waseSwatini"
+    ],
+    "relevance": "0",
+    "region": "Africa",
+    "subregion": "Southern Africa",
+    "translations": {
+      "de": "Swasiland",
+      "es": "Suazilandia",
+      "fr": "Swaziland",
+      "ja": "スワジランド",
+      "it": "Swaziland"
+    },
+    "population": 1119375,
+    "latlng": [
+      -26.5,
+      31.5
+    ],
+    "demonym": "Swazi",
+    "area": 17364,
+    "gini": 51.5,
+    "timezones": [
+      "UTC+02:00"
+    ],
+    "borders": [
+      "MOZ",
+      "ZAF"
+    ],
+    "nativeName": "Swaziland",
+    "callingCodes": [
+      "268"
+    ],
+    "topLevelDomain": [
+      ".sz"
+    ],
+    "alpha2Code": "SZ",
+    "alpha3Code": "SWZ",
+    "currencies": [
+      "SZL"
+    ],
+    "languages": [
+      "en",
+      "ss"
+    ]
+  },
+  {
+    "name": "Sweden",
+    "capital": "Stockholm",
+    "altSpellings": [
+      "SE",
+      "Kingdom of Sweden",
+      "Konungariket Sverige"
+    ],
+    "relevance": "1.5",
+    "region": "Europe",
+    "subregion": "Northern Europe",
+    "translations": {
+      "de": "Schweden",
+      "es": "Suecia",
+      "fr": "Suède",
+      "ja": "スウェーデン",
+      "it": "Svezia"
+    },
+    "population": 9793172,
+    "latlng": [
+      62,
+      15
+    ],
+    "demonym": "Swedish",
+    "area": 450295,
+    "gini": 25,
+    "timezones": [
+      "UTC+01:00"
+    ],
+    "borders": [
+      "FIN",
+      "NOR"
+    ],
+    "nativeName": "Sverige",
+    "callingCodes": [
+      "46"
+    ],
+    "topLevelDomain": [
+      ".se"
+    ],
+    "alpha2Code": "SE",
+    "alpha3Code": "SWE",
+    "currencies": [
+      "SEK"
+    ],
+    "languages": [
+      "sv"
+    ]
+  },
+  {
+    "name": "Switzerland",
+    "capital": "Bern",
+    "altSpellings": [
+      "CH",
+      "Swiss Confederation",
+      "Schweiz",
+      "Suisse",
+      "Svizzera",
+      "Svizra"
+    ],
+    "relevance": "1.5",
+    "region": "Europe",
+    "subregion": "Western Europe",
+    "translations": {
+      "de": "Schweiz",
+      "es": "Suiza",
+      "fr": "Suisse",
+      "ja": "スイス",
+      "it": "Svizzera"
+    },
+    "population": 8256000,
+    "latlng": [
+      47,
+      8
+    ],
+    "demonym": "Swiss",
+    "area": 41284,
+    "gini": 33.7,
+    "timezones": [
+      "UTC+01:00"
+    ],
+    "borders": [
+      "AUT",
+      "FRA",
+      "ITA",
+      "LIE",
+      "DEU"
+    ],
+    "nativeName": "Schweiz",
+    "callingCodes": [
+      "41"
+    ],
+    "topLevelDomain": [
+      ".ch"
+    ],
+    "alpha2Code": "CH",
+    "alpha3Code": "CHE",
+    "currencies": [
+      "CHE",
+      "CHF",
+      "CHW"
+    ],
+    "languages": [
+      "de",
+      "fr",
+      "it"
+    ]
+  }
+]
