@@ -6,6 +6,7 @@ import android.test.AndroidTestCase;
 import com.google.gson.Gson;
 
 import net.wandroid.carta.data.Country;
+import net.wandroid.carta.net.GetCountries;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 public class RestDataTests extends AndroidTestCase {
     public static final int INDEX_BOTSWANA = 0;
     public static final String TEST_JSON_SW_JSON = "test/json/sw.json";
+    public static final String NAME_SW = "sw";
     private Gson mGson;
     private AssetManager mAssetManager;
     private Country[] mCountries;
@@ -39,6 +41,12 @@ public class RestDataTests extends AndroidTestCase {
         assertEquals("Botswana", mCountries[INDEX_BOTSWANA].name);
         assertEquals("Gaborone", mCountries[INDEX_BOTSWANA].capital);
         assertEquals("Africa", mCountries[INDEX_BOTSWANA].region);
+    }
+
+    public void test_get() throws IOException {
+        GetCountries get = new GetCountries();
+        Country[] countries = get.getCountries(NAME_SW);
+        assertEquals("Botswana", countries[INDEX_BOTSWANA].name);
     }
 
 }

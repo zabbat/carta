@@ -1,18 +1,60 @@
 package net.wandroid.carta;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
+import net.wandroid.carta.data.Country;
+import net.wandroid.carta.net.Async;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private LocalBroadcastManager mLocalBroadcastManager;
+
+    private BroadcastReceiver mDownloadCompleteBroadcastReceiver = new BroadcastReceiver() {
+        @Async
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Download complete. Try to update fragment or save for later.
+            ArrayList<Country> countries = (ArrayList<Country>) intent.getSerializableExtra(DownloadCountriesService.KEY_COUNTRIES);
+            updateCountryInfoFragment(countries);
+        }
+    };
+
+    @Async
+    private void updateCountryInfoFragment(List<Country> countries) {
+        CountryInfoFragment fragment = (CountryInfoFragment) getSupportFragmentManager().findFragmentById(R.id.country_info_fragment);
+        if (countries.size() > 0) {
+            fragment.updateText(countries.get(0));
+        } else {
+            fragment.updateText(null);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(DownloadCountriesService.NET_WANDROID_CARTA_DOWNLOAD_RESULT);
+        mLocalBroadcastManager.registerReceiver(mDownloadCompleteBroadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        mLocalBroadcastManager.unregisterReceiver(mDownloadCompleteBroadcastReceiver);
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
@@ -28,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            mLocalBroadcastManager.sendBroadcast(intent);
         }
 
     }
