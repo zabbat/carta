@@ -16,17 +16,18 @@ import android.widget.TextView;
 
 import net.wandroid.carta.data.Country;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class CountryInfoFragment extends Fragment {
 
 
+    public static final String KEY_COUNTRY = "KEY_COUNTRY";
+    public static final String KEY_HAS_COUNTRY = "KEY_HAS_COUNTRY";
     private TextView mNameTextView;
     private TextView mCapitalTextView;
     private TextView mRegionTextView;
 
-    private Map<String, Country> mCountries = new HashMap<>();
+    private Country mCountry;
+
+    private boolean mInvalidCountry;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -55,6 +56,16 @@ public class CountryInfoFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mCountry != null) {
+            outState.putSerializable(KEY_COUNTRY, mCountry);
+        }
+        outState.putBoolean(KEY_HAS_COUNTRY, mInvalidCountry);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_country_info, container, false);
@@ -62,6 +73,17 @@ public class CountryInfoFragment extends Fragment {
         mNameTextView = (TextView) view.findViewById(R.id.country_name);
         mCapitalTextView = (TextView) view.findViewById(R.id.country_capital);
         mRegionTextView = (TextView) view.findViewById(R.id.country_region);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_COUNTRY)) {
+                updateText((Country) savedInstanceState.getSerializable(KEY_COUNTRY));
+            }
+            mInvalidCountry = savedInstanceState.getBoolean(KEY_HAS_COUNTRY, false);
+            if (mInvalidCountry) {
+                noCountry();
+            } else if (mCountry != null) {
+                updateText(mCountry);
+            }
+        }
         return view;
     }
 
@@ -76,15 +98,19 @@ public class CountryInfoFragment extends Fragment {
     }
 
     public void updateText(Country country) {
-        if (country != null) {
-            mNameTextView.setText(country.name);
-            mCapitalTextView.setText(country.capital);
-            mRegionTextView.setText(country.region);
-        } else {
-            mNameTextView.setText("No such country");
-            mCapitalTextView.setText("");
-            mRegionTextView.setText("");
-        }
+        mCountry = country;
+        mInvalidCountry = false;
+        mNameTextView.setText(country.name);
+        mCapitalTextView.setText(country.capital);
+        mRegionTextView.setText(country.region);
+    }
+
+    public void noCountry() {
+        mCountry = null;
+        mInvalidCountry = true;
+        mNameTextView.setText("No such country");
+        mCapitalTextView.setText("");
+        mRegionTextView.setText("");
     }
 
 

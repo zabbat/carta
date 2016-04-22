@@ -21,26 +21,48 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String KEY_COUNTRIES = "KEY_COUNTRIES";
     private LocalBroadcastManager mLocalBroadcastManager;
+    private List<Country> mCountries;
 
     private BroadcastReceiver mDownloadCompleteBroadcastReceiver = new BroadcastReceiver() {
         @Async
         @Override
         public void onReceive(Context context, Intent intent) {
             //Download complete. Try to update fragment or save for later.
-            ArrayList<Country> countries = (ArrayList<Country>) intent.getSerializableExtra(DownloadCountriesService.KEY_COUNTRIES);
+            List<Country> countries = (ArrayList<Country>) intent.getSerializableExtra(DownloadCountriesService.KEY_COUNTRIES);
             updateCountryInfoFragment(countries);
         }
     };
 
+
     @Async
     private void updateCountryInfoFragment(List<Country> countries) {
+
+
         CountryInfoFragment fragment = (CountryInfoFragment) getSupportFragmentManager().findFragmentById(R.id.country_info_fragment);
-        if (countries.size() > 0) {
-            fragment.updateText(countries.get(0));
+
+        //Is fragment valid or has it detached?
+        if (fragment != null) {
+            if (countries.size() > 0) {
+                fragment.updateText(countries.get(0));
+            } else {
+                fragment.noCountry();
+            }
+            mCountries = null;
         } else {
-            fragment.updateText(null);
+            //Fragment is not valid (after onStop), save the downloaded countries
+            mCountries = countries;
         }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mCountries != null) {
+            outState.putSerializable(KEY_COUNTRIES, new ArrayList<>(mCountries));
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -63,6 +85,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_COUNTRIES)) {
+                mCountries = (List<Country>) savedInstanceState.getSerializable(KEY_COUNTRIES);
+                updateCountryInfoFragment(mCountries);
+            }
+        }
+
     }
 
     @Override
