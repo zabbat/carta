@@ -34,31 +34,10 @@ public class CountryInfoFragment extends Fragment {
 
     private boolean mInvalidCountry;
 
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            handleSearch(query.toLowerCase().trim());
-        }
-    };
-
-
     public CountryInfoFragment() {
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getContext());
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SEARCH);
-        manager.registerReceiver(mBroadcastReceiver, filter);
-    }
 
-    @Override
-    public void onStop() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mBroadcastReceiver);
-        super.onStop();
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -93,16 +72,6 @@ public class CountryInfoFragment extends Fragment {
         return view;
     }
 
-    private void handleSearch(String query) {
-
-        Intent intent = new Intent(getContext(), DownloadCountriesService.class);
-        intent.putExtra(DownloadCountriesService.KEY_COUNTRY_NAME, query);
-        Activity activity = getActivity();
-        if (activity != null) {
-            activity.startService(intent);
-        }
-    }
-
     @Async
     public void updateText(Country country) {
         mCountry = country;
@@ -113,7 +82,7 @@ public class CountryInfoFragment extends Fragment {
         Activity activity = getActivity();
         if (activity != null) {
             String imageName = country.alpha2Code.toLowerCase() + ".png";
-            Picasso.with(activity).load("https://raw.githubusercontent.com/hjnilsson/country-flags/master/png250px/" + imageName).into(mFlagImageView);
+            Picasso.with(activity).load("https://raw.githubusercontent.com/hjnilsson/country-flags/master/png250px/" + imageName).error(R.drawable.error_ball).into(mFlagImageView);
         }
     }
 

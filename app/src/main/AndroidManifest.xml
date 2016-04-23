@@ -35,10 +35,6 @@
             android:name="android.app.default_searchable"
             android:value=".MainActivity"/>
 
-        <service
-            android:name=".DownloadCountriesService"
-            android:exported="false"/>
-
     </application>
 
 </manifest>
