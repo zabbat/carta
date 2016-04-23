@@ -41,6 +41,7 @@ public class RestDataTests extends AndroidTestCase {
         assertEquals("Botswana", mCountries[INDEX_BOTSWANA].name);
         assertEquals("Gaborone", mCountries[INDEX_BOTSWANA].capital);
         assertEquals("Africa", mCountries[INDEX_BOTSWANA].region);
+        assertEquals("BW", mCountries[INDEX_BOTSWANA].alpha2Code);
     }
 
     public void test_get() throws IOException {
