@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * Min length of search string that should trigger search suggestions.
      * This is used to avoid getting large data as short strings matches many countries.
      */
-    public static final int MIN_SEARCH_LENGTH = 2;
+    public static final int MIN_SEARCH_LENGTH = 3;
     /**
      * Loader ID
      */
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * Argument for loader. True if the result should be used. false if the result should be search suggestions
      */
     private static final String ARG_UPDATE_FRAGMENT = "ARG_UPDATE_FRAGMENT";
+
     private LocalBroadcastManager mLocalBroadcastManager;
 
     /**
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private void startSearch(String query, boolean updateFragment) {
         mSuggestionAdapter.changeCursor(null); // clear old suggestions
-        if (query.length() > MIN_SEARCH_LENGTH) {
+        if (query.length() >= MIN_SEARCH_LENGTH) {
             Bundle args = new Bundle();
             args.putString(ARG_QUERY, query);
             args.putBoolean(ARG_UPDATE_FRAGMENT, updateFragment);
