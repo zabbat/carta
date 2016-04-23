@@ -2,4 +2,7 @@
     <string name="app_name">Carta</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search Country</string>
+    <string name="no_country">No such country</string>
+    <string name="capital_txt">Capital: %s</string>
+    <string name="region_txt">Region: %s</string>
 </resources>

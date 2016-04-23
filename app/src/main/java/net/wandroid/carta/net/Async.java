@@ -1,7 +1,12 @@
 package net.wandroid.carta.net;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
 /**
- * Created by zabbat on 2016-04-22.
+ * Method might be called asynchronous and some operations
+ * such as FragmentTransaction are  not allowed
  */
+@Target(ElementType.METHOD)
 public @interface Async {
 }
