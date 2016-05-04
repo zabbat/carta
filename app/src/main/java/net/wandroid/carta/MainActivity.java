@@ -9,6 +9,7 @@ import android.content.Loader;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +24,9 @@ import net.wandroid.carta.net.GetCountries;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Country>> {
 
@@ -64,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private SearchView mSearchView;
 
+    /**
+     * Non persistent cache
+     */
+    private final Map<String, Country> mSearchCache = new HashMap<>();
 
     /**
      * Updates the Fragment with country info.
@@ -138,7 +145,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public boolean onQueryTextChange(String newText) {
                 //Search for suggestions. Could be optimized by doing postDelayed with a threshold to avoid spamming.
-                startSearch(newText.trim(), false);
+
+                newText = newText.trim().toLowerCase();
+                if (mSearchCache.containsKey(newText)) {// the result exist in cache, don't use network
+                    updateSearchSuggestions(new ArrayList<>(mSearchCache.values()));
+                } else { // download result
+                    startSearch(newText, false);
+                }
                 return false;
             }
         });
@@ -184,14 +197,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (args == null) {
             args = new Bundle();
         }
-        return new CountryLoader(getApplicationContext(), args.getString(ARG_QUERY, null), args.getBoolean(ARG_UPDATE_FRAGMENT, false));
+        return new CountryLoader(getApplicationContext(), args.getString(ARG_QUERY, null), args.getBoolean(ARG_UPDATE_FRAGMENT, false), mSearchCache);
     }
 
     @Async
     @Override
     public void onLoadFinished(Loader<List<Country>> loader, List<Country> data) {
-
-        MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, COL_COUNTRY_NAME});
 
         //Copy the content, since we don't have control of the data reference (order might rearrange)
         mCountries = new ArrayList<>(data);
@@ -211,12 +222,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         } else { // Loader called for finding suggestions
-            //Update the adapter
-            for (int i = 0; i < mCountries.size(); i++) {
-                c.addRow(new Object[]{i, mCountries.get(i).name});
-            }
-            mSuggestionAdapter.changeCursor(c);
+            updateSearchSuggestions(mCountries);
         }
+    }
+
+    /**
+     * Updates the searcc view with suggestions
+     *
+     * @param suggestions list of countries to be shown as suggestions
+     */
+    private void updateSearchSuggestions(List<Country> suggestions) {
+        MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, COL_COUNTRY_NAME});
+
+        //Update the adapter
+        for (int i = 0; i < suggestions.size(); i++) {
+            c.addRow(new Object[]{i, suggestions.get(i).name});
+        }
+        mSuggestionAdapter.changeCursor(c);
     }
 
     @Override
@@ -239,17 +261,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
          */
         public final boolean mUpdateFragment;
 
+        private final Map<String, Country> mCache;
+
         /**
          * Constructor
          *
          * @param context        the context
          * @param countryName    part of the country name to search for
          * @param updateFragment search mode. If true should try to find exact match, if false then multiple suggestions
+         * @param cache          Reference to cache that will be updated with the search result. If null it will be ignored.
          */
-        public CountryLoader(Context context, String countryName, boolean updateFragment) {
+        public CountryLoader(Context context, String countryName, boolean updateFragment, @Nullable Map<String, Country> cache) {
             super(context);
             mCountryName = countryName;
             mUpdateFragment = updateFragment;
+            mCache = cache;
         }
 
         @Override
@@ -260,8 +286,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             GetCountries get = new GetCountries();
             try {
-                Country[] country = get.getCountries(mCountryName);
-                return Arrays.asList(country);
+                Country[] countries = get.getCountries(mCountryName);
+
+                //Add to cache
+                if (mCache != null) {
+                    for (Country country : countries) {
+                        mCache.put(mCountryName, country);
+                    }
+                }
+
+                return Arrays.asList(countries);
             } catch (IOException e) {
                 e.printStackTrace();
                 //Error. Return empty list
